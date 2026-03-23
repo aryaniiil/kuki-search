@@ -1,0 +1,5 @@
+crawl4ai
+litellm
+duckduckgo_search
+openai
+halo
