@@ -23,7 +23,8 @@ async def run_main():
     engine = SearchEngine(
         model=config.LLM_MODEL,
         api_key=config.LLM_API_KEY,
-        base_url=config.LLM_BASE_URL
+        base_url=config.LLM_BASE_URL,
+        tavily_api_key=config.TAVILY_API_KEY
     )
 
     # query processing

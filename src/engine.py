@@ -11,13 +11,16 @@ from crawl4ai.content_filter_strategy import PruningContentFilter
 from halo import Halo
 
 from src.ddgs import search_ddg
+from src.tavily_search import search_tavily
 from src.queries import generate_search_queries
+import config as app_config
 
 class SearchEngine:
-    def __init__(self, model: str, api_key: str = None, base_url: str = None):
+    def __init__(self, model: str, api_key: str = None, base_url: str = None, tavily_api_key: str = None):
         self.model = model
         self.api_key = api_key
         self.base_url = base_url
+        self.tavily_api_key = tavily_api_key
         self.output_dir = "Results" # base root dir
         self.crawler_initialized = False
 
@@ -180,11 +183,13 @@ class SearchEngine:
             "time_seconds": q_elapsed
         })
 
-        # 2. search with ddgs
-        # fix: queriess -> queries
+        # 2. search with configured provider
         spinner = Halo(text='🌿 searching the webs...', spinner='dots', color='green')
         spinner.start()
-        raw_results, s_elapsed = search_ddg(queries)
+        if app_config.SEARCH_PROVIDER == "tavily":
+            raw_results, s_elapsed = search_tavily(queries, api_key=self.tavily_api_key)
+        else:
+            raw_results, s_elapsed = search_ddg(queries)
         spinner.succeed(f"🌿 found {len(raw_results)} unique results ({s_elapsed}s)\n")
 
         self._save_json(query_folder, "2_search_results.json", {

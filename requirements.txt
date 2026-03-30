@@ -1,5 +1,6 @@
 crawl4ai
 litellm
 duckduckgo_search
+tavily-python
 openai
 halo
